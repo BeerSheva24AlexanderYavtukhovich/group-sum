@@ -14,7 +14,9 @@ public class ThreadsGroupSum extends GroupSum {
     public long computeSum() {
         FutureTask<Long>[] tasks = new FutureTask[groups.length];
         startTasks(tasks);
-        return getSum(tasks);
+        long sum = getSum(tasks);
+        shutdown();
+        return sum;
     }
 
     private long getSum(FutureTask<Long>[] tasks) {
@@ -32,6 +34,9 @@ public class ThreadsGroupSum extends GroupSum {
             tasks[i] = new FutureTask<>(new OneGroupSum(groups[i]));
             new Thread(tasks[i]).start();
         }
+    }
+
+    protected void shutdown() {
     }
 
 }

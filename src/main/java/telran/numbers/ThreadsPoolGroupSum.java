@@ -1,6 +1,5 @@
 package telran.numbers;
 
-import java.util.Arrays;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.FutureTask;
@@ -13,6 +12,7 @@ public class ThreadsPoolGroupSum extends ThreadsGroupSum {
 
     private final ExecutorService executor = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
 
+    @Override
     public void shutdown() {
         executor.shutdown();
     }
@@ -25,25 +25,4 @@ public class ThreadsPoolGroupSum extends ThreadsGroupSum {
         }
 
     }
-
-    @SuppressWarnings("unchecked")
-    @Override
-    public long computeSum() {
-        FutureTask<Long>[] tasks = new FutureTask[groups.length];
-        startTasks(tasks);
-        long sum = getSum(tasks);
-        shutdown();
-        return sum;
-    }
-
-    private long getSum(FutureTask<Long>[] tasks) {
-        return Arrays.stream(tasks).mapToLong(t -> {
-            try {
-                return t.get();
-            } catch (Exception e) {
-                throw new RuntimeException(e);
-            }
-        }).sum();
-    }
-
 }
